@@ -25,8 +25,7 @@ def seg_depart(sentence):
 
     return out_str
 
-def out_put(lines):
-    outfilename = '../data/train_words.txt'
+def out_put(lines, outfilename):
     out_puts = open( outfilename, 'w', encoding='utf8')
     for line in lines:
         line = re.sub(r'[^\u4e00-\u9fa5]+','',line)
