@@ -1,5 +1,4 @@
 import jieba, re
-from app import db
 
 def stopwordlist():
 
@@ -8,8 +7,7 @@ def stopwordlist():
 
 
 
-def get_data():
-    tmp_obj = db['train'].find({})
+def get_data( tmp_obj):
     tmp_arr = []
     for obj in tmp_obj:
        tmp_arr.append(obj['content'])
@@ -37,8 +35,3 @@ def out_put(lines):
 
     out_puts.close()
     print('分词成功')
-
-if __name__ == '__main__':
-
-    lines = get_data()
-    out_put(lines)
