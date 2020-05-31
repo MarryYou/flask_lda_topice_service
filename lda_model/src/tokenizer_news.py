@@ -1,36 +1,22 @@
-import jieba, re
-
-def stopwordlist(filename):
-
-    stopwords = [ list.strip() for list in open(filename, encoding='utf8').readlines()]
-    return stopwords
+from gensim import corpora, models
 
 
 
-def get_data( tmp_obj):
-    tmp_arr = []
-    for obj in tmp_obj:
-       tmp_arr.append(obj['content'])
 
-    return tmp_arr
+fr = open('../data/train_words.txt', 'r', encoding='utf8')
 
-def seg_depart(sentence, filename):
-    sentence_depart = jieba.cut(sentence.strip())
-    stopwords = stopwordlist(filename)
-    out_str = ''
-    for word in sentence_depart:
-        if word not in stopwords:
-            out_str += word
-            out_str += " "
+train = []
 
-    return out_str
+for line in fr.readlines():
+    line = [word.strip() for word in line.split(' ')]
+    train.append(line)
 
-def out_put(lines, outfilename, filename):
-    out_puts = open( outfilename, 'w', encoding='utf8')
-    for line in lines:
-        line = re.sub(r'[^\u4e00-\u9fa5]+','',line)
-        line_seg = seg_depart(line.strip(), filename)
-        out_puts.write(line_seg.strip() + '\n')
+dictionary = corpora.Dictionary(train)
 
-    out_puts.close()
-    print('分词成功')
+corpus = [dictionary.doc2bow(text) for text in train]
+
+lda = models.LdaModel(corpus=corpus, id2word=dictionary, iterations=400, num_topics=10)
+topic_list = lda.print_topics(10)
+print("10个主题的单词分布为：\n")
+for topic in topic_list:
+    print(topic)
